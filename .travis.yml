@@ -1,0 +1,26 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t tiffanyensor/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true tiffanyensor/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t tiffanyensor/multi-client ./client
+  - docker build -f tiffanyensor/multi-nginx ./nginx
+  - docker build -t tiffanyensor/multi-worker ./worker
+  - docker build -t tiffanyensor/multi-server ./server
+
+  # login to the docker CLI
+  - echo "$DOCKER_PW" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # push the images to docker hub
+  - docker push tiffanyensor/multi-client 
+  - docker push tiffanyensor/multi-nginx
+  - docker push tiffanyensor/multi-worker
+  - docker push tiffanyensor/multi-server
+
+
