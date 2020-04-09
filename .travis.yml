@@ -10,7 +10,7 @@ script:
 
 after_success:
   - docker build -t tiffanyensor/multi-client ./client
-  - docker build -f tiffanyensor/multi-nginx ./nginx
+  - docker build -t tiffanyensor/multi-nginx ./nginx
   - docker build -t tiffanyensor/multi-worker ./worker
   - docker build -t tiffanyensor/multi-server ./server
 
